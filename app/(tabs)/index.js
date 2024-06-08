@@ -28,21 +28,23 @@ const Login = ({ navigation }) => {
           .select('*')
           .eq('id', userId)
           .single();
+        
+          console.log(userData.email);
+          console.log(userError.message);
+        // if (userError) {
+        //   // User does not exist, insert new user
+        //   const { error: insertError } = await supabase
+        //     .from('users')
+        //     .insert([{ id: userId, email, username }]);
   
-        if (userError) {
-          // User does not exist, insert new user
-          const { error: insertError } = await supabase
-            .from('users')
-            .insert([{ id: userId, email, username }]);
+        //   if (insertError) {
+        //     Alert.alert('Error', insertError.message);
+        //     console.log('Insert Error:', insertError.message);
+        //     return;
+        //   }
+        // }
   
-          if (insertError) {
-            Alert.alert('Error', insertError.message);
-            console.log('Insert Error:', insertError.message);
-            return;
-          }
-        }
-  
-        router.push('home');
+        // router.push('home');
       }
     } catch (error) {
       Alert.alert('Error', error.message);
