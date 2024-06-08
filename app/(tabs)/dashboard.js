@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { StyleSheet, Text, Image, View, FlatList, TouchableOpacity, Modal } from 'react-native';
+import { useRouter } from 'expo-router';
 
 const products = [
   { id: '#PA0001', name: 'Indomie Goreng 85g' },
@@ -13,9 +14,10 @@ const products = [
   { id: '#PA0009', name: 'Indomie Goreng Aceh 85g' },
 ];
 
-const DashboardScreen = ({ navigation }) => {
+const DashboardScreen = () => {
   const [modalVisible, setModalVisible] = useState(false);
   const [selectedProduct, setSelectedProduct] = useState(null);
+  const router = useRouter();
 
   const openModal = (product) => {
     setSelectedProduct(product);
@@ -34,8 +36,8 @@ const DashboardScreen = ({ navigation }) => {
   return (
     <View style={styles.container}>
       <View style={styles.header}>
-        <TouchableOpacity style={styles.backButton} onPress={() => navigation.goBack()}>
-          <Image source={require('../../assets/back-icon.png')} style={{ width: 25, height: 25, position: 'absolute', left: 0 }} />
+        <TouchableOpacity style={styles.backButton} onPress={() => router.push('home')}>
+          <Image source={require('../../assets/back-icon.png')} style={styles.backIcon} />
         </TouchableOpacity>
         <Text style={styles.title}>Dashboard</Text>
       </View>
@@ -53,7 +55,7 @@ const DashboardScreen = ({ navigation }) => {
         keyExtractor={(item) => item.id}
       />
 
-      <TouchableOpacity style={styles.homeButton} onPress={() => navigation.navigate('Home')}>
+      <TouchableOpacity style={styles.homeButton} onPress={() => router.push('home')}>
         <Text style={styles.homeButtonText}>Back to Home</Text>
       </TouchableOpacity>
 
@@ -99,18 +101,19 @@ const styles = StyleSheet.create({
     marginBottom: 32,
   },
   backButton: {
-    width: 25,
-    height: 25,
-    position: 'absolute',
-    left: 0,
     flexDirection: 'row',
     alignItems: 'center',
+  },
+  backIcon: {
+    width: 25,
+    height: 25,
   },
   title: {
     fontSize: 19,
     fontWeight: '600',
-    flex: 1,
     textAlign: 'center',
+    paddingRight: 25,
+    flex: 1,
   },
   subtitle: {
     fontSize: 18,

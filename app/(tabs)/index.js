@@ -1,8 +1,6 @@
 import React, { useState } from 'react';
 import { View, Text, TextInput, TouchableOpacity, StyleSheet, Image, Alert } from 'react-native';
-import { supabase } from '../supabaseClient'
-// import * as WebBrowser from 'expo-web-browser';
-// import * as AuthSession from 'expo-auth-session';
+import { supabase } from '../supabaseClient';
 import { useRouter } from 'expo-router';
 import { FontAwesome } from '@expo/vector-icons';
 
@@ -22,29 +20,32 @@ const Login = ({ navigation }) => {
         const userId = data.user.id;
         const username = email.split('@')[0];
   
-        // Check if user exists in the user_profiles table
+        // Check if user exists in the users table
         const { data: userData, error: userError } = await supabase
           .from('users')
           .select('*')
           .eq('id', userId)
           .single();
-        
-          console.log(userData.email);
-          console.log(userError.message);
-        // if (userError) {
-        //   // User does not exist, insert new user
-        //   const { error: insertError } = await supabase
-        //     .from('users')
-        //     .insert([{ id: userId, email, username }]);
+
+        if (userError && userError.code === 'PGRST116') {
+          // User does not exist, insert new user
+          const { error: insertError } = await supabase
+            .from('users')
+            .insert([{ id: userId, email, username }]);
   
-        //   if (insertError) {
-        //     Alert.alert('Error', insertError.message);
-        //     console.log('Insert Error:', insertError.message);
-        //     return;
-        //   }
-        // }
-  
-        // router.push('home');
+          if (insertError) {
+            Alert.alert('Error', insertError.message);
+            console.log('Insert Error:', insertError.message);
+            return;
+          }
+        } else if (userError) {
+          Alert.alert('Error', userError.message);
+          console.log('User Fetch Error:', userError.message);
+          return;
+        }
+
+        // Navigate to the home page
+        router.push('home');
       }
     } catch (error) {
       Alert.alert('Error', error.message);
@@ -105,17 +106,12 @@ const styles = StyleSheet.create({
     paddingVertical: 20,
     paddingBottom: 30,
     paddingTop: 95,
-    borderBottomLeftRadius:50,
+    borderBottomLeftRadius: 50,
     borderBottomRightRadius: 50,
   },
   logo: {
     width: 120,
     height: 120,
-  },
-  title: {
-    fontSize: 24,
-    fontWeight: 'bold',
-    marginVertical: 10,
   },
   form: {
     flex: 2,

@@ -1,7 +1,18 @@
 import React from 'react';
 import { StyleSheet, Text, View, Image, TouchableOpacity } from 'react-native';
+import { useRouter } from 'expo-router';
 
 const Home = () => {
+  const router = useRouter();
+
+  const handleNavigateDashboard = () => {
+    router.push('dashboard');
+  };
+
+  const handleNavigateProduct = () => {
+    router.push('product');
+  };
+
   return (
     <View style={styles.container}>
       <View style={styles.header}>
@@ -23,7 +34,7 @@ const Home = () => {
           style={styles.icon} 
         />
         <Text style={styles.description}>Locating products has never been more easy!</Text>
-        <TouchableOpacity style={styles.button} onPress={() => console.log('Locate Product')}>
+        <TouchableOpacity style={styles.button} onPress={() => router.push('product')}>
           <Text style={styles.buttonText}>Locate Product</Text>
           <Image 
             source={require('../../assets/right-icon.png')}
@@ -38,7 +49,7 @@ const Home = () => {
           style={styles.icon} 
         />
         <Text style={styles.description}>Navigate through the data of your warehouse here!</Text>
-        <TouchableOpacity style={styles.button} onPress={() => console.log('Dashboard')}>
+        <TouchableOpacity style={styles.button} onPress={handleNavigateDashboard}>
           <Text style={styles.buttonText}>Dashboard</Text>
           <Image 
             source={require('../../assets/right-icon.png')}

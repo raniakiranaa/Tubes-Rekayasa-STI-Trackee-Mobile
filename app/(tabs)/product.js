@@ -11,17 +11,19 @@ import {
   TouchableWithoutFeedback,
   Keyboard,
 } from 'react-native';
+import { useRouter } from 'expo-router';
 
-const ProductScreen = ({ navigation }) => {
+const ProductScreen = () => {
   const [productId, setProductId] = useState('');
   const [productName, setProductName] = useState('');
+  const router = useRouter();
 
   return (
     <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
       <View style={styles.container}>
         <View style={styles.header}>
-          <TouchableOpacity style={styles.backButton} onPress={() => navigation.goBack()}>
-            <Image source={require('../../assets/back-icon.png')} style={{ width: 25, height: 25, position: 'absolute', left: 0 }} />
+          <TouchableOpacity style={styles.backButton} onPress={() => router.push('home')}>
+            <Image source={require('../../assets/back-icon.png')} style={styles.backIcon} />
           </TouchableOpacity>
           <Text style={styles.title}>Locate Product</Text>
         </View>
@@ -68,20 +70,24 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     marginTop: 46,
     marginBottom: 32,
+    position: 'relative',
   },
   backButton: {
-    width: 25,
-    height: 25,
     position: 'absolute',
     left: 0,
-    flexDirection: 'row',
-    alignItems: 'center',
+    top: '50%',
+    transform: [{ translateY: -12.5 }],
+    zIndex: 1,
+  },
+  backIcon: {
+    width: 25,
+    height: 25,
   },
   title: {
     fontSize: 19,
     fontWeight: '600',
-    flex: 1,
     textAlign: 'center',
+    flex: 1,
   },
   subtitle: {
     fontSize: 18,
