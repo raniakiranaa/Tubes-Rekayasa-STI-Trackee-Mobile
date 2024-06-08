@@ -10,13 +10,40 @@ import {
   Platform,
   TouchableWithoutFeedback,
   Keyboard,
+  Alert,
 } from 'react-native';
 import { useRouter } from 'expo-router';
+import { supabase } from '../supabaseClient'; // Ensure this import is correct based on your file structure
 
 const ProductScreen = () => {
   const [productId, setProductId] = useState('');
   const [productName, setProductName] = useState('');
+  const [errorMessage, setErrorMessage] = useState('');
   const router = useRouter();
+
+  const handleNavigateLocate = (productName, productId) => {
+    router.push({
+      pathname: 'result',
+      params: { productName, productId },
+    });
+  };
+  
+  const handleLocateProduct = async () => {
+    setErrorMessage('');
+
+    const { data, error } = await supabase
+      .from('product')
+      .select('product_id, name')
+      .eq('product_id', productId)
+      .eq('name', productName)
+      .single();
+
+    if (error || !data) {
+      setErrorMessage('Product not found. Please check the Product ID and Name.');
+    } else {
+      handleNavigateLocate(data.name, data.product_id);
+    }
+  };
 
   return (
     <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
@@ -38,7 +65,7 @@ const ProductScreen = () => {
           onChangeText={setProductId}
         />
         
-        <Text style={styles.label}>Product Name</Text>
+        <Text style={styles.label}>Product Name*</Text>
         <TextInput
           style={styles.input}
           placeholder="Enter Product Name"
@@ -46,11 +73,13 @@ const ProductScreen = () => {
           onChangeText={setProductName}
         />
 
+        {errorMessage ? <Text style={styles.errorText}>{errorMessage}</Text> : null}
+
         <KeyboardAvoidingView
           style={styles.keyboardAvoidingView}
           behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
         >
-          <TouchableOpacity style={styles.locateButton} onPress={() => {/* handle locate product action */}}>
+          <TouchableOpacity style={styles.locateButton} onPress={handleLocateProduct}>
             <Text style={styles.locateButtonText}>Locate Product</Text>
           </TouchableOpacity>
         </KeyboardAvoidingView>
@@ -115,6 +144,11 @@ const styles = StyleSheet.create({
     marginBottom: 24,
     fontSize: 16,
     backgroundColor: '#F8F8F8',
+  },
+  errorText: {
+    color: 'red',
+    marginBottom: 16,
+    fontSize: 14,
   },
   locateButton: {
     backgroundColor: '#54433A',
