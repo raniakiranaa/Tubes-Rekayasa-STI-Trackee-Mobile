@@ -1,47 +1,54 @@
 import React, { useState } from 'react';
 import { View, Text, TextInput, TouchableOpacity, StyleSheet, Image, Alert } from 'react-native';
-import { supabase } from '../../lib/supabaseClient';
+import { supabase } from '../supabaseClient'
 // import * as WebBrowser from 'expo-web-browser';
 // import * as AuthSession from 'expo-auth-session';
 import { useRouter } from 'expo-router';
 import { FontAwesome } from '@expo/vector-icons';
 
-const LoginScreen = ({ navigation }) => {
+const Login = ({ navigation }) => {
   const router = useRouter();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
 
   const handleLogin = async () => {
-    const { data, error } = await supabase.auth.signInWithPassword({ email, password });
-
-    if (error) {
-      Alert.alert('Error', error.message);
-    } else {
-      const userId = data.user.id;
-      const username = email.split('@')[0];
-
-      // Check if user exists in the user_profiles table
-      const { data: userData, error: userError } = await supabase
-        .from('users')
-        .select('*')
-        .eq('id', userId)
-        .single();
-
-      if (userError) {
-        // User does not exist, insert new user
-        const { error: insertError } = await supabase
+    try {
+      const { data, error } = await supabase.auth.signInWithPassword({ email, password });
+  
+      if (error) {
+        Alert.alert('Error', error.message);
+        console.log('Error:', error.message);
+      } else {
+        const userId = data.user.id;
+        const username = email.split('@')[0];
+  
+        // Check if user exists in the user_profiles table
+        const { data: userData, error: userError } = await supabase
           .from('users')
-          .insert([{ id: userId, email, username }]);
-
-        if (insertError) {
-          Alert.alert('Error', insertError.message);
-          return;
+          .select('*')
+          .eq('id', userId)
+          .single();
+  
+        if (userError) {
+          // User does not exist, insert new user
+          const { error: insertError } = await supabase
+            .from('users')
+            .insert([{ id: userId, email, username }]);
+  
+          if (insertError) {
+            Alert.alert('Error', insertError.message);
+            console.log('Insert Error:', insertError.message);
+            return;
+          }
         }
+  
+        router.push('home');
       }
-
-      router.push('Home');
+    } catch (error) {
+      Alert.alert('Error', error.message);
+      console.log('Catch Error:', error.message);
     }
-  };
+  };  
 
   return (
     <View style={styles.container}>
@@ -58,7 +65,11 @@ const LoginScreen = ({ navigation }) => {
         <View style={styles.inputContainer}>
           <FontAwesome name="user" size={20} color="#666" style={styles.icon} />
           <TextInput 
-            placeholder="Username"
+            placeholder="Email"
+            keyboardType="email-address"
+            autoCapitalize="none"
+            value={email}
+            onChangeText={setEmail}
             style={styles.input}
           />
         </View>
@@ -67,6 +78,9 @@ const LoginScreen = ({ navigation }) => {
           <TextInput 
             placeholder="Password"
             secureTextEntry
+            autoCapitalize="none"
+            value={password}
+            onChangeText={setPassword}
             style={styles.input}
           />
         </View>
@@ -142,4 +156,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default LoginScreen;
+export default Login;
