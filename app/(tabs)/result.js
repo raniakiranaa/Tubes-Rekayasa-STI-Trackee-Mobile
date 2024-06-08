@@ -1,19 +1,101 @@
-import React from 'react';
-import { StyleSheet, Text, Image, View, TouchableOpacity } from 'react-native';
+import React, { useState, useEffect } from 'react';
+import { StyleSheet, Text, Image, View, TouchableOpacity, Alert } from 'react-native';
+import { useRouter, useLocalSearchParams } from 'expo-router';
+import { supabase } from '../supabaseClient';
 
-const ResultScreen = ({ navigation }) => {
-  const productDetails = {
-    id: '#PA001',
-    name: 'Indomie Varian Mie Goreng',
-    shelfNumber: '123',
-    rowNumber: '1',
-    columnNumber: '1',
+const ResultScreen = () => {
+  const router = useRouter();
+  const { productId, productName } = useLocalSearchParams();
+  const [productDetails, setProductDetails] = useState({
+    itemId: '',
+    productName: '',
+    shelfNumber: '',
+    rowNumber: '',
+    columnNumber: '',
+  });
+  const [errorMessage, setErrorMessage] = useState('');
+
+  useEffect(() => {
+    getItemLocation();
+  }, []);
+
+  const getItemLocation = async () => {
+    try {
+      const productCategory = await getProductCategory(productId);
+      const rackId = await getRackId(productCategory);
+      const itemId = await getItemId(productId);
+      
+      const { data, error } = await supabase
+        .from('rack_loc')
+        .select('rack_id, loc_x, loc_y, item_id')
+        .eq('rack_id', rackId)
+        .eq('item_id', itemId)
+        .limit(1)
+        .single();
+
+      if (error || !data) {
+        setErrorMessage('Product location not found. Please check the Product ID and Name.');
+        Alert.alert('Error', 'Product location not found. Please check the Product ID and Name.');
+      } else {
+        setProductDetails({
+          itemId: data.item_id,
+          productName: productName,
+          shelfNumber: data.rack_id,
+          rowNumber: data.loc_x,
+          columnNumber: data.loc_y, // Assuming column number is not part of the data returned
+        });
+      }
+    } catch (error) {
+      setErrorMessage('An error occurred. Please try again.');
+      Alert.alert('Error', 'An error occurred. Please try again.');
+    }
+  };
+
+  const getProductCategory = async (productId) => {
+    const { data, error } = await supabase
+      .from('product')
+      .select('category')
+      .eq('product_id', productId)
+      .single();
+
+    if (error || !data) {
+      throw new Error('Product category not found.');
+    }
+    return data.category;
+  };
+
+  const getRackId = async (category) => {
+    const { data, error } = await supabase
+      .from('rack')
+      .select('rack_id')
+      .eq('category', category)
+      .single();
+
+    if (error || !data) {
+      throw new Error('Rack ID not found.');
+    }
+    return data.rack_id;
+  };
+
+  const getItemId = async (productId) => {
+    const { data, error } = await supabase
+      .from('item')
+      .select('item_id')
+      .eq('product_id', productId)
+      .order('exp_date', { ascending: true })
+      .limit(1)
+      .single();
+
+    if (error || !data) {
+      throw new Error('Item ID not found.');
+    }
+    return data.item_id;
   };
 
   return (
     <View style={styles.container}>
       <View style={styles.header}>
-        <TouchableOpacity style={styles.backButton} onPress={() => navigation.goBack()}>
+        <TouchableOpacity style={styles.backButton} onPress={() => router.push('product')}>
           <Image source={require('../../assets/back-icon.png')} style={{ width: 25, height: 25, position: 'absolute', left: 0 }} />
         </TouchableOpacity>
         <Text style={styles.title}>Locate Product</Text>
@@ -21,13 +103,18 @@ const ResultScreen = ({ navigation }) => {
       <Text style={styles.subtitle}>Result</Text>
       <Text style={styles.description}>Take a glance where your product is located amidst the chaotic warehouse!</Text>
 
-      <View style={styles.resultContainer}>
-        <Text style={styles.resultText}><Text style={styles.resultLabel}>Product ID :</Text> {productDetails.id}</Text>
-        <Text style={styles.resultText}><Text style={styles.resultLabel}>Product Name :</Text> {productDetails.name}</Text>
-        <Text style={styles.resultText}><Text style={styles.resultLabel}>Shelf Number :</Text> {productDetails.shelfNumber}</Text>
-        <Text style={styles.resultText}><Text style={styles.resultLabel}>Row Number :</Text> {productDetails.rowNumber}</Text>
-        <Text style={styles.resultText}><Text style={styles.resultLabel}>Column Number :</Text> {productDetails.columnNumber}</Text>
-      </View>
+      {errorMessage ? (
+        <Text style={styles.errorText}>{errorMessage}</Text>
+      ) : (
+        <View style={styles.resultContainer}>
+          <Text style={styles.resultText}><Text style={styles.resultLabel}>Item ID :</Text> {productDetails.itemId}</Text>
+          <Text style={styles.resultText}><Text style={styles.resultLabel}>Product Name :</Text> {productDetails.productName
+          }</Text>
+          <Text style={styles.resultText}><Text style={styles.resultLabel}>Shelf Number :</Text> {productDetails.shelfNumber}</Text>
+          <Text style={styles.resultText}><Text style={styles.resultLabel}>Row Number :</Text> {productDetails.rowNumber}</Text>
+          <Text style={styles.resultText}><Text style={styles.resultLabel}>Column Number :</Text> {productDetails.columnNumber}</Text>
+        </View>
+      )}
     </View>
   );
 };
@@ -79,6 +166,11 @@ const styles = StyleSheet.create({
   resultLabel: {
     fontWeight: 'bold',
     color: '#54433A',
+  },
+  errorText: {
+    color: 'red',
+    marginBottom: 16,
+    fontSize: 14,
   },
 });
 

@@ -1,9 +1,27 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { StyleSheet, Text, View, Image, TouchableOpacity } from 'react-native';
 import { useRouter } from 'expo-router';
+import { supabase } from '../supabaseClient';
 
 const Home = () => {
   const router = useRouter();
+  const [username, setUsername] = useState('User');
+
+  useEffect(() => {
+    const fetchUser = async () => {
+      const { data: { user } } = await supabase.auth.getUser();
+      if (user) {
+        // Check if user.email is defined before using it
+        if (user.email) {
+          setUsername(user.email.split('@')[0]);
+        } else {
+          console.error("User email is undefined");
+        }
+      }
+    };
+
+    fetchUser();
+  }, []);
 
   const handleNavigateDashboard = () => {
     router.push('dashboard');
@@ -22,7 +40,7 @@ const Home = () => {
         />
         <View style={styles.welcomeText}>
           <Text style={styles.greeting}>Hello,</Text>
-          <Text style={styles.username}>User 123</Text>
+          <Text style={styles.username}>{username}</Text>
         </View>
       </View>
       <Text style={styles.title}>Welcome to TRACKEE</Text>
