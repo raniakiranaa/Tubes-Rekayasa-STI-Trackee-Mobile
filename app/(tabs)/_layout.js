@@ -44,6 +44,14 @@ export default function TabLayout() {
             tabBarStyle: {display: 'none'},
           }}
         />
+        <Tabs.Screen
+          name="result" 
+          options={{
+            href: null,
+            unmountOnBlur: true,
+            tabBarStyle: {display: 'none'},
+          }}
+        />
     </Tabs>
   );
 }
