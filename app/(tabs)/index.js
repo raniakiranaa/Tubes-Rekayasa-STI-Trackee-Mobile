@@ -4,6 +4,7 @@ import { supabase } from '../../lib/supabaseClient';
 // import * as WebBrowser from 'expo-web-browser';
 // import * as AuthSession from 'expo-auth-session';
 import { useRouter } from 'expo-router';
+import { FontAwesome } from '@expo/vector-icons';
 
 const LoginScreen = ({ navigation }) => {
   const router = useRouter();
@@ -42,191 +43,102 @@ const LoginScreen = ({ navigation }) => {
     }
   };
 
-//   const handleGoogleSignIn = async () => {
-//     try {
-//       const redirectUri = AuthSession.makeRedirectUri({
-//         scheme: "pawpal"
-//       });
-
-//       const { data, error } = await supabase.auth.signInWithOAuth({
-//         provider: "google",
-//         options: { redirectTo: redirectUri },
-//       });
-
-//       if (error) {
-//         Alert.alert('Error', error.message);
-//         return;
-//       }
-
-//       const authUrl = data.url;
-//       const result = await WebBrowser.openAuthSessionAsync(authUrl, redirectUri);
-
-//       if (result.type === "success" && result.url) {
-//         const parsedUrl = new URL(result.url);
-//         const accessToken = parsedUrl.hash.split("&").reduce((acc, part) => {
-//           const item = part.split("=");
-//           if (item[0] === "#access_token") acc = decodeURIComponent(item[1]);
-//           return acc;
-//         }, "");
-//         const refreshToken = parsedUrl.hash.split("&").reduce((acc, part) => {
-//           const item = part.split("=");
-//           if (item[0] === "refresh_token") acc = decodeURIComponent(item[1]);
-//           return acc;
-//         }, "");
-
-//         if (accessToken) {
-//           const { data: sessionData, error: sessionError } = await supabase.auth.setSession({
-//             access_token: accessToken,
-//             refresh_token: refreshToken,
-//           });
-
-//           if (sessionError) {
-//             Alert.alert("Error", "Failed to set session.");
-//             return;
-//           }
-
-//           const user = sessionData.user;
-//           const userId = user.id;
-//           const email = user.email;
-//           const username = email.split('@')[0];
-
-//           // Check if user exists in the user_profiles table
-//           const { data: userData, error: userError } = await supabase
-//             .from('users')
-//             .select('*')
-//             .eq('id', userId)
-//             .single();
-
-//           if (userError) {
-//             // User does not exist, insert new user
-//             const { error: insertError } = await supabase
-//               .from('users')
-//               .insert([{ id: userId, email, username }]);
-
-//             if (insertError) {
-//               Alert.alert('Error', insertError.message);
-//               return;
-//             }
-//           }
-
-//           Alert.alert("Login success");
-//           router.push('Home');
-//         } else {
-//           Alert.alert('Error', 'Failed to retrieve access token.');
-//         }
-//       } else {
-//         Alert.alert('Error', 'Google sign-in was cancelled or failed.');
-//       }
-//     } catch (error) {
-//       console.error("Failed to open web browser or handle Google sign-in:", error);
-//       Alert.alert('Error', 'An error occurred during Google sign-in. Please try again.');
-//     }
-//   };
-
-  const handleNavigateToRegister = () => {
-    router.push('Register');
-  };
-
   return (
     <View style={styles.container}>
-      <Image source={require('../../assets/trackee_logo.png')} style={styles.logo} />
-      <Text style={styles.title}>Login to your Account</Text>
-      <TextInput 
-        style={styles.input}
-        placeholder="Email"
-        keyboardType="email-address"
-        autoCapitalize="none"
-        value={email}
-        onChangeText={setEmail}
-      />
-      <TextInput 
-        style={styles.input}
-        placeholder="Password"
-        secureTextEntry
-        autoCapitalize="none"
-        value={password}
-        onChangeText={setPassword}
-      />
-      <Text style={styles.signUpText}>Don’t have an account? <Text style={styles.signUpLink} onPress={handleNavigateToRegister}>Sign Up</Text></Text>
-      <TouchableOpacity style={styles.loginButton} onPress={handleLogin}>
-        <Text style={styles.loginButtonText}>Log In</Text>
-      </TouchableOpacity>
-      {/* <TouchableOpacity style={styles.googleButton} onPress={handleGoogleSignIn}>
-        <Image source={{ uri: 'https://upload.wikimedia.org/wikipedia/commons/thumb/5/53/Google_%22G%22_Logo.svg/512px-Google_%22G%22_Logo.svg.png' }} style={styles.googleIcon} />
-        <Text style={styles.googleButtonText}>Log In with Google</Text>
-      </TouchableOpacity> */}
+      <View style={styles.header}>
+        <Image 
+          source={require('../../assets/trackee_logo.png')}
+          style={styles.logo}
+        />
+      </View>
+      <View style={styles.form}>
+        <View style={styles.login}>
+            <Text style={styles.loginText}>Log In</Text>
+        </View>
+        <View style={styles.inputContainer}>
+          <FontAwesome name="user" size={20} color="#666" style={styles.icon} />
+          <TextInput 
+            placeholder="Username"
+            style={styles.input}
+          />
+        </View>
+        <View style={styles.inputContainer}>
+          <FontAwesome name="lock" size={20} color="#666" style={styles.icon} />
+          <TextInput 
+            placeholder="Password"
+            secureTextEntry
+            style={styles.input}
+          />
+        </View>
+        <TouchableOpacity onPress={handleLogin} style={styles.button}>
+          <Text style={styles.buttonText}>Log In</Text>
+        </TouchableOpacity>
+      </View>
     </View>
   );
-};
+}
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    justifyContent: 'center',
+    backgroundColor: '#fff',
+  },
+  header: {
     alignItems: 'center',
-    backgroundColor: '#ffffff',
-    padding: 16,
+    backgroundColor: '#BCA79C',
+    paddingVertical: 20,
+    paddingBottom: 30,
+    paddingTop: 95,
+    borderBottomLeftRadius:50,
+    borderBottomRightRadius: 50,
   },
   logo: {
-    width: 100,
-    height: 100,
-    marginBottom: 16,
+    width: 120,
+    height: 120,
   },
   title: {
     fontSize: 24,
     fontWeight: 'bold',
-    marginBottom: 32,
+    marginVertical: 10,
   },
-  input: {
+  form: {
+    flex: 2,
     width: '100%',
-    height: 50,
-    borderColor: '#ccc',
-    borderWidth: 1,
-    borderRadius: 8,
-    paddingHorizontal: 16,
-    marginBottom: 16,
+    top: 10,
+    padding: 20,
   },
-  signUpText: {
-    fontSize: 14,
-    color: '#777',
-    marginBottom: 32,
-  },
-  signUpLink: {
-    color: '#0000ff',
-    textDecorationLine: 'underline',
-  },
-  loginButton: {
-    width: '100%',
-    height: 50,
-    backgroundColor: '#3b5998',
-    justifyContent: 'center',
-    alignItems: 'center',
-    borderRadius: 8,
-    marginBottom: 16,
-  },
-  loginButtonText: {
-    color: '#ffffff',
-    fontSize: 18,
-  },
-  googleButton: {
+  inputContainer: {
     flexDirection: 'row',
     alignItems: 'center',
-    justifyContent: 'center',
-    width: '100%',
-    height: 50,
-    backgroundColor: '#ffffff',
-    borderColor: '#ccc',
-    borderWidth: 1,
-    borderRadius: 8,
+    marginBottom: 20,
+    borderBottomWidth: 1,
+    borderBottomColor: '#ccc',
   },
-  googleIcon: {
-    width: 24,
-    height: 24,
-    marginRight: 8,
+  icon: {
+    marginHorizontal: 10,
   },
-  googleButtonText: {
+  input: {
+    flex: 1,
+    height: 40,
+    fontSize: 16,
+  },
+  button: {
+    backgroundColor: '#54433A',
+    padding: 15,
+    borderRadius: 100,
+    alignItems: 'center',
+  },
+  buttonText: {
+    color: '#fff',
     fontSize: 18,
-    color: '#000',
+  },
+  login: {
+    alignItems: 'center',
+    paddingBottom: 15,
+  },
+  loginText: {
+    fontSize: 23,
+    fontWeight: 'bold',
   },
 });
 
