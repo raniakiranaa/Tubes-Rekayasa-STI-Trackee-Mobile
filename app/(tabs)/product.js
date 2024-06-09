@@ -156,8 +156,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 30,
     borderRadius: 20,
     alignItems: 'center',
-    marginTop: 20,
-    marginBottom: 20,
+    marginVertical: 20,
   },
   locateButtonText: {
     color: '#fff',

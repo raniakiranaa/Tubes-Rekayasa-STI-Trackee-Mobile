@@ -92,6 +92,58 @@ const ResultScreen = () => {
     return data.item_id;
   };
 
+  const handleCheckoutItem = async () => {
+    const { itemId } = productDetails;
+    try {
+      // Remove item from item table
+      const { error: deleteItemError } = await supabase
+        .from('item')
+        .delete()
+        .eq('item_id', itemId);
+
+      if (deleteItemError) {
+        throw new Error('Error deleting item');
+      }
+
+      // Check if there are other items with the same product_id
+      const { data: remainingItems, error: checkRemainingItemsError } = await supabase
+        .from('item')
+        .select('item_id')
+        .eq('product_id', productId);
+
+      if (checkRemainingItemsError) {
+        throw new Error('Error checking remaining items');
+      }
+
+      if (remainingItems.length === 0) {
+        // No more items with the same product_id, delete product from product table
+        const { error: deleteProductError } = await supabase
+          .from('product')
+          .delete()
+          .eq('product_id', productId);
+
+        if (deleteProductError) {
+          throw new Error('Error deleting product');
+        }
+      }
+
+      // Update item_id in rack_loc table to null
+      const { error: updateRackLocError } = await supabase
+        .from('rack_loc')
+        .update({ item_id: null })
+        .eq('item_id', itemId);
+
+      if (updateRackLocError) {
+        throw new Error('Error updating rack location');
+      }
+
+      Alert.alert('Success', 'Item successfully checked out.');
+      router.push('product');
+    } catch (error) {
+      Alert.alert('Error', error.message);
+    }
+  };
+
   return (
     <View style={styles.container}>
       <View style={styles.header}>
@@ -108,13 +160,18 @@ const ResultScreen = () => {
       ) : (
         <View style={styles.resultContainer}>
           <Text style={styles.resultText}><Text style={styles.resultLabel}>Item ID :</Text> {productDetails.itemId}</Text>
-          <Text style={styles.resultText}><Text style={styles.resultLabel}>Product Name :</Text> {productDetails.productName
-          }</Text>
+          <Text style={styles.resultText}><Text style={styles.resultLabel}>Product Name :</Text> {productDetails.productName}</Text>
           <Text style={styles.resultText}><Text style={styles.resultLabel}>Shelf Number :</Text> {productDetails.shelfNumber}</Text>
           <Text style={styles.resultText}><Text style={styles.resultLabel}>Row Number :</Text> {productDetails.rowNumber}</Text>
           <Text style={styles.resultText}><Text style={styles.resultLabel}>Column Number :</Text> {productDetails.columnNumber}</Text>
         </View>
       )}
+
+      <View style={styles.footer}>
+        <TouchableOpacity style={styles.checkoutButton} onPress={handleCheckoutItem}>
+          <Text style={styles.checkoutButtonText}>Checkout Product</Text>
+        </TouchableOpacity>
+      </View>
     </View>
   );
 };
@@ -157,7 +214,7 @@ const styles = StyleSheet.create({
     marginBottom: 24,
   },
   resultContainer: {
-    marginTop: 20,
+    flex: 1,
   },
   resultText: {
     fontSize: 14,
@@ -171,6 +228,27 @@ const styles = StyleSheet.create({
     color: 'red',
     marginBottom: 16,
     fontSize: 14,
+  },
+  footer: {
+    position: 'absolute',
+    bottom: 0,
+    left: 0,
+    right: 0,
+    padding: 32,
+    backgroundColor: '#fff',
+  },
+  checkoutButton: {
+    backgroundColor: '#54433A',
+    paddingVertical: 15,
+    paddingHorizontal: 30,
+    borderRadius: 20,
+    marginVertical: 20,
+    alignItems: 'center',
+  },
+  checkoutButtonText: {
+    color: '#fff',
+    fontSize: 16,
+    fontWeight: 'bold',
   },
 });
 

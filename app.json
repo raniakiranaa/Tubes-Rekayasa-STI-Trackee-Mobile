@@ -8,7 +8,7 @@
     "userInterfaceStyle": "light",
     "scheme": "trackee",
     "splash": {
-      "image": "./assets/trackee_logo.png",
+      "image": "./assets/splash.png",
       "resizeMode": "native",
       "backgroundColor": "#BCA79C"
     },
