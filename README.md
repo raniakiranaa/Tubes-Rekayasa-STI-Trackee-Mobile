@@ -11,11 +11,12 @@ Trackee adalah aplikasi manajemen gudang berbasis web dan mobile (Warehouse Mana
 - [18221168 Rania Sasi Kirana](https://github.com/raniakiranaa)
 
 ## ⭐️ Panduan Penggunaan Trackee ⭐️
-1. Buka aplikasi Trackee.
-2. Halaman pertama yang muncul adalah login yang mengharuskan pengguna memasukkan email dan password.
-3. Pada landing page, terdapat 2 pilihan menu, yaitu dashboard, dan locate product.
-4. Alur pemakaian dapat dimulai dari halaman dashboard yang berisi daftar produk yang tersedia di gudang beserta detail produk, seperti nama, kategori, merk, dan stok. Di halaman ini juga terdapat opsi untuk mengedit serta menghapus produk.
-5. Klik halaman Locate pada navbar untuk melacak letak produk di dalam gudang. Produk dengan expired date terdekat akan ditampilkan dan dapat dicheckout
+1. Install aplikasi di link https://expo.dev/accounts/fredricktaslim/projects/tubes-rekayasa-sti-trackee-mobile/builds/30c958d7-1ff3-4b72-9089-5ed34cd12ce3
+2. Buka aplikasi Trackee.
+3. Halaman pertama yang muncul adalah login yang mengharuskan pengguna memasukkan email dan password.
+4. Pada landing page, terdapat 2 pilihan menu, yaitu dashboard, dan locate product.
+5. Alur pemakaian dapat dimulai dari halaman dashboard yang berisi daftar produk yang tersedia di gudang beserta detail produk, seperti nama, kategori, merk, dan stok. Di halaman ini juga terdapat opsi untuk mengedit serta menghapus produk.
+6. Klik halaman Locate pada navbar untuk melacak letak produk di dalam gudang. Produk dengan expired date terdekat akan ditampilkan dan dapat dicheckout
 
 ## Tech Stack
 Web application:
