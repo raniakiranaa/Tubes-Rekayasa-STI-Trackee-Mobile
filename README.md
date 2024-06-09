@@ -13,10 +13,11 @@ Trackee adalah aplikasi manajemen gudang berbasis web dan mobile (Warehouse Mana
 ## ⭐️ Panduan Penggunaan Trackee ⭐️
 1. Install aplikasi di link https://expo.dev/accounts/fredricktaslim/projects/tubes-rekayasa-sti-trackee-mobile/builds/264e2539-8b1c-439c-b189-49cfd8f6ddb3
 2. Buka aplikasi Trackee.
-3. Halaman pertama yang muncul adalah login yang mengharuskan pengguna memasukkan email dan password.
-4. Pada landing page, terdapat 2 pilihan menu, yaitu dashboard, dan locate product.
-5. Alur pemakaian dapat dimulai dari halaman dashboard yang berisi daftar produk yang tersedia di gudang beserta detail produk, seperti nama, kategori, merk, dan stok. Di halaman ini juga terdapat opsi untuk mengedit serta menghapus produk.
-6. Klik halaman Locate pada navbar untuk melacak letak produk di dalam gudang. Produk dengan expired date terdekat akan ditampilkan dan dapat dicheckout
+3. Masukkan link ini pada kolom link : exp+tubes-rekayasa-sti-trackee-mobile://expo-development-client/?url=http%3A%2F%2F192.168.100.212%3A8081
+4. Halaman pertama yang muncul adalah login yang mengharuskan pengguna memasukkan email dan password.
+5. Pada landing page, terdapat 2 pilihan menu, yaitu dashboard, dan locate product.
+6. Alur pemakaian dapat dimulai dari halaman dashboard yang berisi daftar produk yang tersedia di gudang beserta detail produk, seperti nama, kategori, merk, dan stok. Di halaman ini juga terdapat opsi untuk mengedit serta menghapus produk.
+7. Klik halaman Locate pada navbar untuk melacak letak produk di dalam gudang. Produk dengan expired date terdekat akan ditampilkan dan dapat dicheckout
 
 ## Tech Stack
 Web application:
