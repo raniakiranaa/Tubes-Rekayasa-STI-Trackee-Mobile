@@ -11,7 +11,7 @@ Trackee adalah aplikasi manajemen gudang berbasis web dan mobile (Warehouse Mana
 - [18221168 Rania Sasi Kirana](https://github.com/raniakiranaa)
 
 ## ⭐️ Panduan Penggunaan Trackee ⭐️
-1. Install aplikasi di link https://expo.dev/accounts/fredricktaslim/projects/tubes-rekayasa-sti-trackee-mobile/builds/30c958d7-1ff3-4b72-9089-5ed34cd12ce3
+1. Install aplikasi di link https://expo.dev/accounts/fredricktaslim/projects/tubes-rekayasa-sti-trackee-mobile/builds/264e2539-8b1c-439c-b189-49cfd8f6ddb3
 2. Buka aplikasi Trackee.
 3. Halaman pertama yang muncul adalah login yang mengharuskan pengguna memasukkan email dan password.
 4. Pada landing page, terdapat 2 pilihan menu, yaitu dashboard, dan locate product.
